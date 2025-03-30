@@ -1,5 +1,5 @@
 // tests/core_abstraction_examples.test.ts
-import { BaseNode, Node, BatchNode, ParallelBatchNode, Flow, BatchFlow, ParallelBatchFlow } from '../src/index';
+import { Node, BatchNode, ParallelBatchNode, Flow, BatchFlow } from '../src/index';
 
 // Define shared storage types
 type SharedStorage = {
@@ -17,7 +17,7 @@ type SharedStorage = {
 };
 
 // 1. Simple Node Example (SummarizeFile from node.md)
-class SummarizeFile extends Node<SharedStorage, FileParams> {
+class SummarizeFile extends Node<SharedStorage> {
   async prep(shared: SharedStorage): Promise<string | undefined> {
     return shared.data;
   }
@@ -144,7 +144,7 @@ type FileParams = {
   filename: string;
 };
 
-class LoadFile extends Node<SharedStorage, FileParams> {
+class LoadFile extends Node<SharedStorage> {
   async prep(shared: SharedStorage): Promise<string> {
     // Simulate loading a file
     const filename = this._params.filename;
@@ -393,6 +393,7 @@ describe('Core Abstraction Examples', () => {
       loadFile.next(summarizeFile);
       
       const summarizeAllFiles = new SummarizeAllFiles(new Flow(loadFile));
+      // Files are processed one at a time with different params for each
       await summarizeAllFiles.run(shared);
       
       // The last file's summary should be in shared.summary

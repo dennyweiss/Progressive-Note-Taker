@@ -14,13 +14,14 @@ type BatchParams = {
   multiplier?: number;
 };
 
-class AsyncDataProcessNode extends Node<SharedStorage, BatchParams> {
+class AsyncDataProcessNode extends Node<SharedStorage> {
   constructor(maxRetries: number = 1, wait: number = 0) {
     super(maxRetries, wait);
   }
 
   async prep(shared: SharedStorage): Promise<number> {
-    const key = this._params.key;
+    const params = this._params as BatchParams;
+    const key = params.key;
     const data = shared.inputData?.[key] ?? 0;
 
     if (!shared.results) {
@@ -41,7 +42,8 @@ class AsyncDataProcessNode extends Node<SharedStorage, BatchParams> {
     execRes: number
   ): Promise<string | undefined> {
     await new Promise((resolve) => setTimeout(resolve, 10)); // Simulate async work
-    const key = this._params.key;
+    const params = this._params as BatchParams;
+    const key = params.key;
 
     if (!shared.results) {
       shared.results = {};
@@ -52,7 +54,7 @@ class AsyncDataProcessNode extends Node<SharedStorage, BatchParams> {
   }
 }
 
-class AsyncErrorNode extends Node<SharedStorage, BatchParams> {
+class AsyncErrorNode extends Node<SharedStorage> {
   constructor(maxRetries: number = 1, wait: number = 0) {
     super(maxRetries, wait);
   }
@@ -70,7 +72,8 @@ class AsyncErrorNode extends Node<SharedStorage, BatchParams> {
     prepRes: any,
     execRes: any
   ): Promise<string | undefined> {
-    const key = this._params.key;
+    const params = this._params as BatchParams;
+    const key = params.key;
     if (key === 'errorKey') {
       throw new Error(`Async error processing key: ${key}`);
     }
@@ -166,7 +169,7 @@ describe('BatchFlow Tests', () => {
   });
 
   test('nested async flow', async () => {
-    class AsyncInnerNode extends Node<SharedStorage, BatchParams> {
+    class AsyncInnerNode extends Node<SharedStorage> {
       async prep(shared: SharedStorage): Promise<any> {
         return undefined;
       }
@@ -180,7 +183,8 @@ describe('BatchFlow Tests', () => {
         prepRes: any,
         execRes: any
       ): Promise<string | undefined> {
-        const key = this._params.key;
+        const params = this._params as BatchParams;
+        const key = params.key;
 
         if (!shared.intermediateResults) {
           shared.intermediateResults = {};
@@ -195,7 +199,7 @@ describe('BatchFlow Tests', () => {
       }
     }
 
-    class AsyncOuterNode extends Node<SharedStorage, BatchParams> {
+    class AsyncOuterNode extends Node<SharedStorage> {
       async prep(shared: SharedStorage): Promise<any> {
         return undefined;
       }
@@ -209,7 +213,8 @@ describe('BatchFlow Tests', () => {
         prepRes: any,
         execRes: any
       ): Promise<string | undefined> {
-        const key = this._params.key;
+        const params = this._params as BatchParams;
+        const key = params.key;
 
         if (!shared.results) {
           shared.results = {};
@@ -253,7 +258,7 @@ describe('BatchFlow Tests', () => {
   });
 
   test('custom async parameters', async () => {
-    class CustomParamNode extends Node<SharedStorage, BatchParams> {
+    class CustomParamNode extends Node<SharedStorage> {
       async prep(shared: SharedStorage): Promise<any> {
         return undefined;
       }
@@ -267,20 +272,20 @@ describe('BatchFlow Tests', () => {
         prepRes: any,
         execRes: any
       ): Promise<string | undefined> {
-        const key = this._params.key;
-        const multiplier = this._params.multiplier || 1;
-
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        const params = this._params as BatchParams;
+        const key = params.key;
+        const multiplier = params.multiplier || 1;
 
         if (!shared.results) {
           shared.results = {};
         }
 
-        // Safely access inputData with default value
-        const inputValue = shared.inputData?.[key] ?? 0;
-        shared.results[key] = inputValue * multiplier;
+        // Get the value from inputData
+        const value = shared.inputData?.[key] ?? 0;
+        // Apply the multiplier
+        shared.results[key] = value * multiplier;
 
-        return 'done';
+        return 'processed';
       }
     }
 

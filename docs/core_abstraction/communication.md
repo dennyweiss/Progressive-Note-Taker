@@ -132,10 +132,11 @@ interface SummarizeParams {
 }
 
 // 1) Create a Node that uses params
-class SummarizeFile extends Node<SharedStore, SummarizeParams> {
+class SummarizeFile extends Node<SharedStore> {
   async prep(shared: SharedStore): Promise<unknown> {
-    // Access the node's param
-    const filename = this._params.filename;
+    // Access the node's param using type casting
+    const params = this._params as SummarizeParams;
+    const filename = params.filename;
     return shared.data[filename] || "";
   }
 
@@ -149,7 +150,8 @@ class SummarizeFile extends Node<SharedStore, SummarizeParams> {
     prepRes: unknown,
     execRes: unknown
   ): Promise<string | undefined> {
-    const filename = this._params.filename;
+    const params = this._params as SummarizeParams;
+    const filename = params.filename;
     shared.summary[filename] = execRes as string;
     return "default";
   }
@@ -163,7 +165,7 @@ node.setParams({ filename: "doc1.txt" });
 node.run(shared);
 
 // 4) Create Flow
-const flow = new Flow<SharedStore, SummarizeParams>(node);
+const flow = new Flow<SharedStore>(node);
 
 // 5) Set Flow params (overwrites node params)
 flow.setParams({ filename: "doc2.txt" });
