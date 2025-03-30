@@ -41,8 +41,38 @@ Alternatively, you can simply copy the [source code](src/index.ts) directly into
 
 ## Quick Start
 
-```typescript
-// Basic example coming soon
+Run the following command to create a new PocketFlow project:
+
+```bash
+npx create-pocketflow
+```
+
+Use cursor/windsurf/any other LLM builtin IDE to open the project.  
+You can type the following prompt to the agent to confirm the project is setup correctly:
+
+```
+Help me describe briefly about PocketFlow.js
+```
+
+Simply start typing your prompt, and the AI agent will build the project for you.  
+Here's a simple example:
+
+```
+I want to create an application that can write novel:
+
+1. User can enter a novel title
+2. It will generate a outline of the novel
+3. It will generate a chapter based on the outline
+4. It will save the chapter to ./output/title_name.md
+
+First, read the requirements carefully.
+Then, start with design.md first. Stop there until further instructions.
+```
+
+Once you have the design, and you have no questions, start the implementation by simply typing:
+
+```
+Start implementing the design.
 ```
 
 ## Documentation
