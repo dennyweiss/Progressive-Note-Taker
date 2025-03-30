@@ -163,7 +163,7 @@ node.setParams({ filename: "doc1.txt" });
 node.run(shared);
 
 // 4) Create Flow
-const flow = new Flow<SharedStore, SummarizeParams>(node);
+const flow = new Flow<SharedStore>(node);
 
 // 5) Set Flow params (overwrites node params)
 flow.setParams({ filename: "doc2.txt" });
