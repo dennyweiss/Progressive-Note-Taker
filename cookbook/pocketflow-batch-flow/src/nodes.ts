@@ -69,8 +69,7 @@ export class ApplyFilterNode extends Node<SharedData, ApplyFilterParams> {
   }): Promise<Buffer> {
     const filterType = prepRes.filterType;
     
-    console.log(`Processing ${prepRes} with ${filterType} filter...`);
-    
+    console.log(`Processing image with ${filterType} filter...`);
     let processedImage;
     switch (filterType) {
       case 'grayscale':
