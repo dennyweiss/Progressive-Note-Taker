@@ -1,74 +1,59 @@
-# Image Filter Application
+# Parallel Image Processor
 
-This application applies image filters to multiple images in parallel using PocketFlow's ParallelBatchFlow pattern.
+Demonstrates how AsyncParallelBatchFlow processes multiple images with multiple filters >8x faster than sequential processing.
 
 ## Features
 
-- Processes all images in the `src/images` directory
-- Applies three filters to each image: blur, grayscale, and sepia
-- Processes images in parallel batches for maximum efficiency
-- Saves processed images to the `output` directory with naming pattern `originalName_filterName`
-- Generates a report of all processed images
-- Uses Sharp for high-performance image processing in Node.js
+```mermaid
+graph TD
+    subgraph AsyncParallelBatchFlow[Image Processing Flow]
+        subgraph AsyncFlow[Per Image-Filter Flow]
+            A[Load Image] --> B[Apply Filter]
+            B --> C[Save Image]
+        end
+    end
+```
 
-## Prerequisites
+- Processes images with multiple filters in parallel
+- Applies three different filters (grayscale, blur, sepia)
+- Shows significant speed improvement over sequential processing
+- Manages system resources with semaphores
 
-- Node.js (v14 or later)
-- npm
-
-## Installation
-
-1. Clone this repository
-2. Install dependencies:
+## Run It
 
 ```bash
 npm install
-```
-
-## Usage
-
-1. Place your images in the `src/images` directory
-2. Run the application:
-
-```bash
-npm run build
-node dist/image_filter_app.js
-```
-
-## Implementation Details
-
-The application demonstrates the use of the ParallelBatchFlow pattern from PocketFlow. It consists of three main components:
-
-1. **Image Scanner Node**: Scans the `src/images` directory for image files
-2. **Image Processing Node**: Uses ParallelBatchFlow to apply filters to images in parallel using Sharp
-3. **Completion Report Node**: Generates a report of all processed images
-
-## Configuration
-
-You can adjust the batch size and concurrency level in the `ImageProcessingFlow` constructor:
-
-```typescript
-// 5 images per batch, 3 parallel batches
-const processingFlow = new ImageProcessingFlow(5, 3);
+npm run start
 ```
 
 ## Output
 
-- Processed images are saved to the `output` directory with naming pattern `originalName_filterName`
-- A report file `report.txt` is generated in the `output` directory
+```
+Starting Image Filter Application...
+Scanning for images in C:\WorkSpace\PocketFlow-Typescript\cookbook\pocketflow-parallel-batch-flow\src\images
+Found 3 images to process
+Created 9 image processing tasks
+Processing bird.jpg with blur filter
+Processing bird.jpg with grayscale filter
+Processing bird.jpg with sepia filter
+Processing cat.jpg with blur filter
+Processing cat.jpg with grayscale filter
+Processing cat.jpg with sepia filter
+Processing dog.jpg with blur filter
+Processing dog.jpg with grayscale filter
+Processing dog.jpg with sepia filter
+Successfully processed 3 images
+Report generated at report.txt
+Image processing completed successfully!
+Processed 3 images with 3 filters (blur, grayscale, sepia).
+Output files and report can be found in the 'output' directory.
+```
 
-## Example
+## Key Points
 
-If you have an image `cat.jpg` in the `src/images` directory, you will get three processed images in the `output` directory:
+- **Sequential**: Total time = sum of all item times
 
-- `cat_blur.jpg`
-- `cat_grayscale.jpg`
-- `cat_sepia.jpg`
+  - Good for: Rate-limited APIs, maintaining order
 
-## Image Processing Details
-
-The application uses the Sharp library to apply the following filters:
-
-- **Blur**: Applies a Gaussian blur with radius 5
-- **Grayscale**: Converts the image to grayscale
-- **Sepia**: Applies a sepia tone effect using a color matrix
+- **Parallel**: Total time ≈ longest single item time
+  - Good for: I/O-bound tasks, independent operations
