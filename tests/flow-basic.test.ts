@@ -7,7 +7,7 @@ type SharedStorage = {
   execResult?: any;
 };
 
-class NumberNode extends Node<SharedStorage> {
+class NumberNode extends Node<SharedStorage, Record<string, unknown>> {
   constructor(
     private number: number,
     maxRetries: number = 1,

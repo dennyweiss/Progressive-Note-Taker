@@ -117,8 +117,7 @@ type FileParams = DirectoryParams & {
 
 class FileBatchFlow extends BatchFlow<SharedStorage> {
   async prep(shared: SharedStorage): Promise<FileParams[]> {
-    const params = this._params as DirectoryParams;
-    const directory = params.directory;
+    const directory = this._params.directory;
     const files = await getFilesInDirectory(directory).filter((f) =>
       f.endsWith(".txt")
     );

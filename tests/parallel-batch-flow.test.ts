@@ -8,7 +8,10 @@ type SharedStorage = {
   total?: number;
 };
 
-class AsyncParallelNumberProcessor extends ParallelBatchNode<SharedStorage> {
+class AsyncParallelNumberProcessor extends ParallelBatchNode<
+  SharedStorage,
+  { batchId: number }
+> {
   private delay: number;
 
   constructor(delay: number = 0.1, maxRetries: number = 1, wait: number = 0) {
@@ -17,7 +20,7 @@ class AsyncParallelNumberProcessor extends ParallelBatchNode<SharedStorage> {
   }
 
   async prep(shared: SharedStorage): Promise<number[]> {
-    const batchId = this._params.batchId as number;
+    const batchId = this._params.batchId;
     return shared.batches?.[batchId] || [];
   }
 
@@ -35,7 +38,7 @@ class AsyncParallelNumberProcessor extends ParallelBatchNode<SharedStorage> {
     if (!shared.processedNumbers) {
       shared.processedNumbers = {};
     }
-    shared.processedNumbers[this._params.batchId as number] = execRes;
+    shared.processedNumbers[this._params.batchId] = execRes;
     return 'processed';
   }
 }
