@@ -172,12 +172,8 @@ my-project/
 │   ├── flow.ts
 │   ├── types.ts
 │   └── utils/
-│       ├── index.ts
 │       ├── callLlm.ts
 │       └── searchWeb.ts
-├── tests/
-│   ├── flow.test.ts
-│   └── nodes.test.ts
 ├── docs/
 │   └── design.md
 ├── package.json
@@ -189,7 +185,7 @@ my-project/
 - **`src/utils/`**: Contains all utility functions.
   - It's recommended to dedicate one TypeScript file to each API call, for example `callLlm.ts` or `searchWeb.ts`.
   - Each file should export functions that can be imported elsewhere in the project
-  - Include tests in the `tests` directory for each utility function
+  - Include test cases for each utility function using `utilityFunctionName.test.ts`
 - **`src/nodes.ts`**: Contains all the node definitions.
 
   ```typescript
@@ -197,7 +193,6 @@ my-project/
   export interface QASharedStore {
     question?: string;
     answer?: string;
-    [key: string]: unknown;
   }
   ```
 
@@ -206,9 +201,12 @@ my-project/
   import { Node } from "pocketflow";
   import { callLlm } from "./utils/callLlm";
   import { QASharedStore } from "./types";
+  import PromptSync from "prompt-sync";
+
+  const prompt = PromptSync();
 
   export class GetQuestionNode extends Node<QASharedStore> {
-    async exec(_: unknown): Promise<string> {
+    async exec(): Promise<string> {
       // Get question directly from user input
       const userQuestion = prompt("Enter your question: ") || "";
       return userQuestion;
@@ -254,6 +252,7 @@ my-project/
   // src/flow.ts
   import { Flow } from "pocketflow";
   import { GetQuestionNode, AnswerNode } from "./nodes";
+  import { QASharedStore } from "./types";
 
   export function createQaFlow(): Flow {
     // Create nodes
@@ -264,7 +263,7 @@ my-project/
     getQuestionNode.next(answerNode);
 
     // Create flow starting with input node
-    return new Flow(getQuestionNode);
+    return new Flow<QASharedStore>(getQuestionNode);
   }
   ```
 
@@ -292,12 +291,6 @@ my-project/
   // Run the main function
   main().catch(console.error);
   ```
-
-- **`tests/`**: Contains test files that verify the functionality of your nodes, flows, and utilities.
-
-  - Use a testing framework like Jest or Mocha
-  - Write tests for each node, flow, and utility function
-  - Consider using mock data and interfaces for testing
 
 - **`package.json`**: Contains project metadata and dependencies.
 
