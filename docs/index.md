@@ -4,9 +4,9 @@ title: "Home"
 nav_order: 1
 ---
 
-# Pocket Flow
+# PocketFlow.js
 
-A [100-line](https://github.com/the-pocket/PocketFlow/blob/main/pocketflow/__init__.py) minimalist LLM framework for _Agents, Task Decomposition, RAG, etc_.
+A [100-line](https://github.com/The-Pocket/PocketFlow-Typescript/blob/main/src/index.ts) minimalist LLM framework for _Agents, Task Decomposition, RAG, etc_.
 
 - **Lightweight**: Just the core graph abstraction in 100 lines. ZERO dependencies, and vendor lock-in.
 - **Expressive**: Everything you love from larger frameworks—([Multi-](./design_pattern/multi_agent.html))[Agents](./design_pattern/agent.html), [Workflow](./design_pattern/workflow.html), [RAG](./design_pattern/rag.html), and more.
@@ -65,4 +65,4 @@ We **do not** provide built-in utilities. Instead, we offer _examples_—please 
 
 ## Ready to build your Apps?
 
-Check out [Agentic Coding Guidance](./guide.md), the fastest way to develop LLM projects with Pocket Flow!
+Check out [Agentic Coding Guidance](./guide.md), the fastest way to develop LLM projects with PocketFlow.js!
